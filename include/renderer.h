@@ -5,6 +5,27 @@
 #include "config.h"
 #include "game.h"
 
+struct line2D{
+  vec2<double> A;
+  vec2<double> v;
+};
+
+struct square{
+  double distance;
+  vec3<int> point00;
+  vec3<int> point01;
+  vec3<int> point10;
+  vec3<int> point11;
+  line2D bounds[4];
+  double boundingBoxMinY;
+  double boundingBoxMaxY;
+  vec3<uint> cell;
+  uint8_t cellType;
+  uint8_t side;
+  bool operator<(const square &other) const { return distance < other.distance; }
+  std::pair<double, double> intersectX(double y) const;
+};
+
 class Renderer
 {
 private:
@@ -16,6 +37,7 @@ private:
 
 
   u_int8_t grid[gridSizeX*gridSizeY*gridSizeZ] = {};
+  sf::Color textureColor(vec2<double> position, const square& sq) const;
 public:
   Renderer(sf::RenderWindow &window) : window(window){}
   inline uint8_t getCell(vec3<uint> pos){ return grid[pos.x + pos.y * gridSizeX + pos.z * gridSizeX * gridSizeY]; }

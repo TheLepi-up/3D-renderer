@@ -11,7 +11,9 @@ file(GLOB SOURCES "src/*.cpp")
 
 
 add_executable(${PROJECT_NAME} ${SOURCES})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_OPTIONS "-Wall;-Og;-g;-flto;-ffast-math;-ftree-vectorize;-march=native")
+add_compile_options(-Wall -Og -g -flto -ffast-math -ftree-vectorize -march=native)
+add_compile_options(-fsanitize=address)
+# add_link_options("-fsanitize=address")
 
 target_link_libraries(${PROJECT_NAME} PRIVATE SFML::System SFML::Window SFML::Graphics boost_thread)
 

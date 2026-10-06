@@ -1,0 +1,35 @@
+Renderer:
+if position changed or rotation changed
+  skip
+for every pixel in shadowmap:
+  If shadowmap does not contain pixel: raycast
+  add squrare to multiset and shadowmap
+reset shadowmap
+for every squrare in multiset (closest to most distant):
+  for every pixel in squrare
+    if pixel was already rendered:
+      skip to next empty pixel using shadowmap
+      continue
+    render pixel
+  add square to shadowmap
+
+
+Shadowmap:
+  point-line comparison:
+    Check if point P is right or on line A, B
+    (P - A) * (rotateRight(B-A)) >= 0
+  next point after line:
+    
+    t = (P.y-A.y) / (B.y-A.y)
+    P.x = A.x + t * (B.x - A.x)
+
+Project pixel on plane:
+A, B: line
+P, N: point on plane and normal
+I: Intersection point
+U = B-A
+dot = U * N
+W = A - P
+fac = - N * W / dot
+V = U * fac
+I = A + V

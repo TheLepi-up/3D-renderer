@@ -26,6 +26,7 @@ int main(int argc, char** argv) {
   }
 
   auto lastUpdate = chrono::system_clock::now();
+  renderer.update();
   while (window.isOpen()) {
     while (const optional<sf::Event> event = window.pollEvent()) {
       if (event->is<sf::Event::Closed>()) {
@@ -63,7 +64,7 @@ int main(int argc, char** argv) {
         renderer.setDir({cos(angle.x) * cos(angle.y), sin(angle.x) * cos(angle.y), sin(angle.y)});
       }
     }
-    renderer.update();
+    //renderer.update();
     this_thread::sleep_until(lastUpdate += chrono::microseconds(1000000/FPS));
   }
 }
