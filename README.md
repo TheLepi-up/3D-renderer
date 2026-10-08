@@ -1,6 +1,21 @@
 # 3D CPU-renderer for block based worlds based on Raycasting
 I wondered what would happen, if I use raycasting in 3D. This is a technique commonly used to make 2D-Worlds look like 3D in old videogames like Doom. I used the same algorithm to collect all visible squares in a scene and then render only these squares.
 
+## Getting started
+### Build
+Go to the project directory and build using Cmake:
+```
+mkdir build
+cd build
+cmake ..
+make
+./3D_renderer
+```
+
+### Usage
+Use the mouse to look around. Use the arrow keys and W / S to move along the X, Y and Z axis.
+
+
 ## Implementation details
 This project is one of my hobby projects and therefore uses 0% AI as that would be beside the point. I used C++, Cmake and SFML as I am most familiar with them.
 
@@ -19,7 +34,6 @@ rendering works in two passes:
 
 game.h, game.cpp:
 currnently empty. This will contain the world generation in the future.
-
 
 ## Future plans
 * Implement procedural terrain generation and game.cpp for world generation. I would like to use spaghetti-cave generation in order to generate a maze of some sort.
