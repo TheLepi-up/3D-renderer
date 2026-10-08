@@ -178,7 +178,7 @@ void Renderer::update(){
           double dist01 = diffpoint01 * dir;
           double dist10 = diffpoint10 * dir;
           double dist11 = diffpoint11 * dir;
-          if(dist00 < 0 || dist01 < 0 || dist10 < 0 || dist11 < 0)
+          if(dist00 < EPS || dist01 < EPS || dist10 < EPS || dist11 < EPS)
             continue; //find next tile, this one intersects the viewing plane
 
           vec3<double> screenPoint00 = diffpoint00 / dist00 - dir;
