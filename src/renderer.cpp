@@ -34,7 +34,7 @@ std::pair<double, double> square::intersectX(double y) const{
   for (const line2D &line : bounds)
   {
     if(line.v.y == 0){
-      if((line.A.y <= y && line.v.x > 0) || (line.A.y > y && line.v.x < 0))
+      if((line.A.y <= y + EPS && line.v.x > 0) || (line.A.y > y - EPS && line.v.x < 0))
         continue; // scanline is inside
       else{
         return {1, -1}; // scanline is outside
@@ -52,12 +52,12 @@ std::pair<double, double> square::intersectX(double y) const{
 namespace shmap{
   short shadowmap[windowHeight][windowWidth] = {};
   inline void insert(const square &sq){
-    for(uint y = std::ceil(scaleToWindowY(sq.boundingBoxMinY)); y < std::ceil(scaleToWindowY(sq.boundingBoxMaxY)); y++){
+    for(uint y = std::ceil(scaleToWindowY(sq.boundingBoxMinY) - EPS); y < std::ceil(scaleToWindowY(sq.boundingBoxMaxY)); y++){
       std::pair interval = sq.intersectX(scaleFromWindowY(y));
       if(interval.second <= interval.first)
         continue;
-      uint start = std::min<uint>(std::ceil(scaleToWindowX(interval.first)), windowWidth);
-      uint end = std::min<uint>(std::ceil(scaleToWindowX(interval.second)), windowWidth);
+      uint start = std::min<uint>(std::ceil(scaleToWindowX(interval.first) - EPS), windowWidth);
+      uint end = std::min<uint>(std::ceil(scaleToWindowX(interval.second) + EPS), windowWidth);
       if(end <= start)
         continue;
 #ifdef DCHECK
@@ -92,7 +92,7 @@ void Renderer::update(){
     for (uint i = 0; i < windowWidth; i++) {
       uint next = shmap::nextX(i, j);
       if(next != i){
-        i = next;
+        i = next - 1;
         continue;
       }
       vec3<double> ray = dir + planeX * scaleFromWindowX(i) + planeY * scaleFromWindowY(j) + (vec3<double>){1e-10, 1e-10, 1e-10};
@@ -239,10 +239,10 @@ void Renderer::update(){
     for(uint y = std::ceil(scaleToWindowY(tile.boundingBoxMinY)); y < scaleToWindowY(tile.boundingBoxMaxY); y++){
       std::pair interval = tile.intersectX(scaleFromWindowY(y));
       uint end = std::clamp<double>(std::ceil(scaleToWindowX(interval.second)), 0, windowWidth);
-      for(uint x = std::ceil(scaleToWindowX(interval.first)); x < end; x++){
+      for(uint x = std::ceil(scaleToWindowX(interval.first) - EPS); x < end; x++){
         uint next = shmap::nextX(x, y);
         if(next != x){
-          x = next;
+          x = next - 1;
           continue;
         }
 #ifdef DCHECK
@@ -284,7 +284,7 @@ void Renderer::update(){
     //if(i == selectedSquare){
     //}
   }
-  //const square* selectedTile = &tiles[std::clamp<uint>(selectedSquare, 0, tiles.size())];
+  const square* selectedTile = &tiles[std::clamp<uint>(selectedSquare, 0, tiles.size() - 1)];
   if(selectedTile){
     for (double i = 0; i < 1; i += 0.01)
     {
@@ -319,8 +319,8 @@ void Renderer::update(){
     window.display();
   }
   logTrace("screen rendered");
-  // std::cout << std::setw(8) << tiles.size() << "\r";
-  // std::flush(std::cout);
+  std::cout << std::setw(8) << tiles.size() << "\r";
+  std::flush(std::cout);
 }
 
 sf::Color Renderer::textureColor(vec2<double> position, const square &sq) const{
@@ -331,9 +331,11 @@ sf::Color Renderer::textureColor(vec2<double> position, const square &sq) const{
     // std::flush(std::cout);
     return sf::Color::White;
   }
+  position.x = std::clamp(position.x, 0.0, 1.0);
+  position.y = std::clamp(position.y, 0.0, 1.0);
   // edge
-  if(position.x < 0.01 || position.x > 0.99 || position.y < 0.01 || position.y > 0.99)
-    return sf::Color::Blue;
+  // if(position.x < 0.01 || position.x > 0.99 || position.y < 0.01 || position.y > 0.99)
+  //   return sf::Color::Blue;
 
   // checkerboard pattern
   vec2<int> pixel = position * 8;
