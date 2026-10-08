@@ -8,4 +8,7 @@
 #define gridSizeZ 16
 #define fieldOfView 100
 #define FPS 60
+
+
+#define EPS 1e-6
 #endif

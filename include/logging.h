@@ -10,7 +10,7 @@ void log(const std::string &logLevel, const std::string &file, uint line, const 
 #define INFO 1
 #define TRACE 0
 
-#define LOGLEVEL TRACE
+#define LOGLEVEL INFO
 
 #define EXPAND(x) x
 #define GET_MACRO(_1, _2, _3, _4, name, ...) name

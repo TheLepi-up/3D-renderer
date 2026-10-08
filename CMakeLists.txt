@@ -9,11 +9,12 @@ find_package(SFML 3 REQUIRED COMPONENTS System Window Graphics)
 
 file(GLOB SOURCES "src/*.cpp")
 
-
-add_executable(${PROJECT_NAME} ${SOURCES})
-add_compile_options(-Wall -Og -g -flto -ffast-math -ftree-vectorize -march=native)
-add_compile_options(-fsanitize=address)
+add_compile_options(-Wall -Ofast -g -flto -ffast-math -ftree-vectorize -march=native)
+# add_compile_options(-Wall -Og -g)
+# add_compile_options(-fsanitize=address)
 # add_link_options("-fsanitize=address")
+add_compile_definitions(DCHECK)
+add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE SFML::System SFML::Window SFML::Graphics boost_thread)
 
