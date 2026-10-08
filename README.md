@@ -14,7 +14,7 @@ log functions and definitions for configuring log-levels and handling log calls.
 renderer.h, renderer.cpp:
 store player location and orientation relative to the scene and handle scene rendering.
 rendering works in two passes: 
-* Raycasting for identifying visible squares in the scene. An array (shadowmap) is used to reduce the number of times raycasting is performed by skipping pixels that are covered by a visible tile. Due to the nature of a 3D grid, there should not be any missing squares.
+* Raycasting for identifying visible squares in the scene. Raycasting is based on the algorithm on [this website](https://lodev.org/cgtutor/raycasting.html). An array (shadowmap) is used to reduce the number of times raycasting is performed by skipping pixels that are covered by a visible tile. Due to the nature of a 3D grid, there should not be any missing squares.
 * Tile rendering: all squares are sorted according to the distance from the viewing plane and then rendered in that order. Shadowmap is used again in order to not cover a close square by a more distant one.
 
 game.h, game.cpp:
