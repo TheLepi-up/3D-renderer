@@ -1,3 +1,5 @@
+Some implementation notes.
+
 Renderer:
 if position changed or rotation changed
   skip

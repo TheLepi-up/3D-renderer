@@ -8,13 +8,21 @@ struct vec2{
   template<typename T2>
   inline vec2<T> operator+(vec2<T2> other) const { return {x + other.x, y + other.y}; }
   template<typename T2>
+  inline vec2<T> operator+=(vec2<T2> other) { return {x += other.x, y += other.y}; }
+  template<typename T2>
   inline vec2<T> operator-(vec2<T2> other) const { return {x - other.x, y - other.y}; }
   template<typename T2>
+  inline vec2<T> operator-=(vec2<T2> other) { return {x -= other.x, y -= other.y}; }
+  template<typename T2>
   inline vec2<T> operator*(T2 other) const { return {x * other, y * other}; }
+  template<typename T2>
+  inline vec2<T> operator*(T2 other) { return {x *= other, y *= other}; }
   template<typename T2>
   inline auto operator*(vec2<T2> other) const { return x * other.x + y * other.y; }
   template<typename T2>
   inline vec2<T> operator/(T2 other) const { return {x / other, y / other}; }
+  template<typename T2>
+  inline vec2<T> operator/(T2 other) { return {x /= other, y /= other}; }
   template<typename T2>
   inline operator vec2<T2>() const { return {(T2)x, (T2)y}; }
   inline T operator[](uint i) const { return ((T*)this)[i]; }
@@ -37,13 +45,21 @@ struct vec3{
   template<typename T2>
   inline vec3<T> operator+(vec3<T2> other) const { return {x + other.x, y + other.y, z + other.z}; }
   template<typename T2>
+  inline vec3<T> operator+=(vec3<T2> other) { return {x += other.x, y += other.y, z += other.z}; }
+  template<typename T2>
   inline vec3<T> operator-(vec3<T2> other) const { return {x - other.x, y - other.y, z - other.z}; }
   template<typename T2>
+  inline vec3<T> operator-=(vec3<T2> other) { return {x -= other.x, y -= other.y, z -= other.z}; }
+  template<typename T2>
   inline vec3<T> operator*(T2 other) const { return {x * other, y * other, z * other}; }
+  template<typename T2>
+  inline vec3<T> operator*=(T2 other) { return {x *= other, y *= other, z *= other}; }
   template<typename T2>
   inline auto operator*(vec3<T2> other) const { return x * other.x + y * other.y + z * other.z; }
   template<typename T2>
   inline vec3<T> operator/(T2 other) const { return {x / other, y / other, z / other}; }
+  template<typename T2>
+  inline vec3<T> operator/=(T2 other) { return {x /= other, y /= other, z /= other}; }
   template<typename T2>
   inline operator vec3<T2>() const { return {(T2)x, (T2)y, (T2)z}; }
   inline T operator[](uint i) const { return ((T*)this)[i]; }

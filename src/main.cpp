@@ -35,22 +35,22 @@ int main(int argc, char** argv) {
       if (const sf::Event::KeyPressed* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
         switch (keyPressed->scancode) {
         case sf::Keyboard::Scancode::Up:
-          position.x += 0.1;
+          renderer.move({ 0.1, 0.0, 0.0 });
           break;
         case sf::Keyboard::Scancode::Down:
-          position.x -= 0.1;
+          renderer.move({ -0.1, 0.0, 0.0 });
           break;
         case sf::Keyboard::Scancode::Left:
-          position.y -= 0.1;
+          renderer.move({ 0.0, -0.1, 0.0 });
           break;
         case sf::Keyboard::Scancode::Right:
-          position.y += 0.1;
+          renderer.move({ 0.0, 0.1, 0.0 });
           break;
         case sf::Keyboard::Scancode::W:
-          position.z += 0.1;
+          renderer.move({ 0.0, 0.0, 0.1 });
           break;
         case sf::Keyboard::Scancode::S:
-          position.z -= 0.1;
+          renderer.move({ 0.0, 0.0, -0.1 });
           break;
         // case sf::Keyboard::Scancode::J:
         //   renderer.selectedSquare ++;

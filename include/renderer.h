@@ -31,7 +31,9 @@ class Renderer
 {
 private:
   sf::RenderWindow &window;
-  
+
+  vec3<double> position = {8, 8, 8};
+  //vec4<double> orientation = {1, 0, 0, 0};
   vec3<double> dir = {1, 0, 0};
   vec3<double> planeX = {0, 1, 0};
   vec3<double> planeY = {0, 0, 1};
@@ -51,5 +53,6 @@ public:
   inline vec3<double> getDir(){ return this->dir; }
   inline vec3<double> getPlaneX(){ return this->planeX; }
   inline vec3<double> getPlaneY(){ return this->planeY; }
+  inline void move(vec3<double> step){ position += step; }
 };
 #endif
