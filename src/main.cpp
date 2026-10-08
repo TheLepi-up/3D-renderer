@@ -52,12 +52,12 @@ int main(int argc, char** argv) {
         case sf::Keyboard::Scancode::S:
           position.z -= 0.1;
           break;
-        case sf::Keyboard::Scancode::J:
-          renderer.selectedSquare ++;
-          break;
-        case sf::Keyboard::Scancode::K:
-          renderer.selectedSquare --;
-          break;
+        // case sf::Keyboard::Scancode::J:
+        //   renderer.selectedSquare ++;
+        //   break;
+        // case sf::Keyboard::Scancode::K:
+        //   renderer.selectedSquare --;
+        //   break;
         
         default:
           break;
@@ -71,11 +71,11 @@ int main(int argc, char** argv) {
         renderer.setDir({cos(angle.x) * cos(angle.y), sin(angle.x) * cos(angle.y), sin(angle.y)});
       }
     }
-    // auto start = chrono::system_clock::now();
+    auto start = chrono::system_clock::now();
     renderer.update();
-    // auto timediff = chrono::system_clock::now() - start;
-    // std::cout << std::setw(9) << timediff.count() / 1000 << "\r";
-    // std::flush(std::cout);
+    auto timediff = chrono::system_clock::now() - start;
+    std::cout << std::setw(9) << timediff.count() / 1000 << "\r";
+    std::flush(std::cout);
     this_thread::sleep_until(lastUpdate += chrono::microseconds(1000000/FPS));
   }
 }

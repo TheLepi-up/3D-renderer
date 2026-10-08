@@ -22,7 +22,7 @@ struct square{
   vec3<uint> cell;
   uint8_t cellType;
   uint8_t side;
-  vec2<uint> raycastingPos;
+  // vec2<uint> raycastingPos;
   bool operator<(const square &other) const { return distance < other.distance; }
   std::pair<double, double> intersectX(double y) const;
 };
@@ -40,7 +40,7 @@ private:
   u_int8_t grid[gridSizeX*gridSizeY*gridSizeZ] = {};
   sf::Color textureColor(vec2<double> position, const square& sq) const;
 public:
-  uint selectedSquare = 0;
+  // uint selectedSquare = 0;
   Renderer(sf::RenderWindow &window) : window(window){}
   inline uint8_t getCell(vec3<uint> pos){ return grid[pos.x + pos.y * gridSizeX + pos.z * gridSizeX * gridSizeY]; }
   inline void setCell(vec3<uint> pos, uint8_t state){ grid[pos.x + pos.y * gridSizeX + pos.z * gridSizeX * gridSizeY] = state; }

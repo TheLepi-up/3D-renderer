@@ -6,7 +6,7 @@
 #include "logging.h"
 #include "game.h"
 
-const square *selectedTile;
+// const square *selectedTile;
 
 inline constexpr double scaleToWindowX(double coordinate) {
   return coordinate * windowWidth / 2 + windowWidth / 2;
@@ -57,7 +57,7 @@ namespace shmap{
       if(interval.second <= interval.first)
         continue;
       uint start = std::min<uint>(std::ceil(scaleToWindowX(interval.first) - EPS), windowWidth);
-      uint end = std::min<uint>(std::ceil(scaleToWindowX(interval.second) + EPS), windowWidth);
+      uint end = std::min<uint>(std::ceil(scaleToWindowX(interval.second)), windowWidth);
       if(end <= start)
         continue;
 #ifdef DCHECK
@@ -100,7 +100,6 @@ void Renderer::update(){
       vec3<int8_t> orientation = ray.apply<int8_t>([](double a){ return (int8_t)(a >= 0 ? 1 : -1); });
       vec3<int> cell = position.apply(static_cast<double (*)(double)>(floor));
       vec3<double> current = ray.apply<double, double>([](double r, double p){ return r >= 0 ? (1 - p) / r : -p / r; }, position - cell);
-      //bool oob = false;
       uint8_t side;
       while(true){
         if(current.x < current.y && current.x < current.z){
@@ -118,8 +117,7 @@ void Renderer::update(){
         }
         if(cell.apply<bool, int>([](int a, int b){ return a < 0 || a >= b; }, 
                                   {gridSizeX, gridSizeY, gridSizeZ}).any()){
-          //oob = true;
-          break;
+          break; // out of bounds!
         }
         if(getCell(cell)){
             if((side == 0 && orientation.x < 0) || 
@@ -209,7 +207,7 @@ void Renderer::update(){
             .cell = cell,
             .cellType = getCell(cell),
             .side = side,
-            .raycastingPos = {i, j}
+            // .raycastingPos = {i, j}
           };
 #ifdef DCHECK
           if(tile.bounds[0].v.cross(tile.bounds[1].v) < 0 ||
@@ -230,10 +228,8 @@ void Renderer::update(){
   }
   std::sort(tiles.begin(), tiles.end());
   sf::Image image({windowWidth, windowHeight}, sf::Color::Black);
-  // TODO: render tiles
   shmap::reset();
-  selectedTile = nullptr;
-  // uint i = 0;
+  // selectedTile = nullptr;
   for(const square &tile : tiles){
     vec3<double> W = position - tile.point00;
     for(uint y = std::ceil(scaleToWindowY(tile.boundingBoxMinY)); y < scaleToWindowY(tile.boundingBoxMaxY); y++){
@@ -264,9 +260,7 @@ void Renderer::update(){
           vec3<double> I = position + ray * fac;
           vec3<double> relativePos = I - tile.point00;
           texturePos = {
-            //std::clamp(relativePos[(tile.side / 2 + 1) % 3], 0.0, 1.0),
             relativePos[(tile.side / 2 + 1) % 3],
-            //std::clamp(relativePos[(tile.side / 2 + 2) % 3], 0.0, 1.0)
             relativePos[(tile.side / 2 + 2) % 3]
           };
           
@@ -277,38 +271,24 @@ void Renderer::update(){
         shmap::shadowmap[y][x] = end;
       }
     }
-    //shmap::insert(tile);
-    //image.setPixel({tile.raycastingPos.x, tile.raycastingPos.y}, sf::Color::White);
-
     //i++;
     //if(i == selectedSquare){
     //}
   }
-  const square* selectedTile = &tiles[std::clamp<uint>(selectedSquare, 0, tiles.size() - 1)];
-  if(selectedTile){
-    for (double i = 0; i < 1; i += 0.01)
-    {
-      vec2<double> pixel = scaleToWindow(selectedTile->bounds[0].A + selectedTile->bounds[0].v * i);
-      image.setPixel({(uint)std::clamp<int>(pixel.x, 0, windowWidth - 1), (uint)std::clamp<int>(pixel.y, 0, windowHeight - 1)}, sf::Color::Green);
-      pixel = scaleToWindow(selectedTile->bounds[1].A + selectedTile->bounds[1].v * i);
-      image.setPixel({(uint)std::clamp<int>(pixel.x, 0, windowWidth - 1), (uint)std::clamp<int>(pixel.y, 0, windowHeight - 1)}, sf::Color::Green);
-      pixel = scaleToWindow(selectedTile->bounds[2].A + selectedTile->bounds[2].v * i);
-      image.setPixel({(uint)std::clamp<int>(pixel.x, 0, windowWidth - 1), (uint)std::clamp<int>(pixel.y, 0, windowHeight - 1)}, sf::Color::Green);
-      pixel = scaleToWindow(selectedTile->bounds[3].A + selectedTile->bounds[3].v * i);
-      image.setPixel({(uint)std::clamp<int>(pixel.x, 0, windowWidth - 1), (uint)std::clamp<int>(pixel.y, 0, windowHeight - 1)}, sf::Color::Green);
-    }
-    image.setPixel({selectedTile->raycastingPos.x, selectedTile->raycastingPos.y}, sf::Color::Red);
-  }
-  // for (uint j = 0; j < windowHeight; j++) {
-  //   for (uint i = 0; i < windowWidth; i++) {
-  //       sf::Color col;
-  //     if(oob){
-  //       col = sf::Color::Black;
-  //     }else{
-  //       col = sf::Color((cell.x + 1)*10, (cell.y + 1)*10, (cell.z + 1)*10);
-  //     }
-  //     image.setPixel(sf::Vector2u(i, j), col);
+  // const square* selectedTile = &tiles[std::clamp<uint>(selectedSquare, 0, tiles.size() - 1)];
+  // if(selectedTile){
+  //   for (double i = 0; i < 1; i += 0.01)
+  //   {
+  //     vec2<double> pixel = scaleToWindow(selectedTile->bounds[0].A + selectedTile->bounds[0].v * i);
+  //     image.setPixel({(uint)std::clamp<int>(pixel.x, 0, windowWidth - 1), (uint)std::clamp<int>(pixel.y, 0, windowHeight - 1)}, sf::Color::Green);
+  //     pixel = scaleToWindow(selectedTile->bounds[1].A + selectedTile->bounds[1].v * i);
+  //     image.setPixel({(uint)std::clamp<int>(pixel.x, 0, windowWidth - 1), (uint)std::clamp<int>(pixel.y, 0, windowHeight - 1)}, sf::Color::Green);
+  //     pixel = scaleToWindow(selectedTile->bounds[2].A + selectedTile->bounds[2].v * i);
+  //     image.setPixel({(uint)std::clamp<int>(pixel.x, 0, windowWidth - 1), (uint)std::clamp<int>(pixel.y, 0, windowHeight - 1)}, sf::Color::Green);
+  //     pixel = scaleToWindow(selectedTile->bounds[3].A + selectedTile->bounds[3].v * i);
+  //     image.setPixel({(uint)std::clamp<int>(pixel.x, 0, windowWidth - 1), (uint)std::clamp<int>(pixel.y, 0, windowHeight - 1)}, sf::Color::Green);
   //   }
+  //   image.setPixel({selectedTile->raycastingPos.x, selectedTile->raycastingPos.y}, sf::Color::Red);
   // }
   sf::Texture t;
   if(t.loadFromImage(image)){
@@ -319,27 +299,27 @@ void Renderer::update(){
     window.display();
   }
   logTrace("screen rendered");
-  std::cout << std::setw(8) << tiles.size() << "\r";
-  std::flush(std::cout);
+  // std::cout << std::setw(8) << tiles.size() << "\r";
+  // std::flush(std::cout);
 }
 
 sf::Color Renderer::textureColor(vec2<double> position, const square &sq) const{
   // oob detection
   if(position.x < -EPS || position.x >= 1 + EPS || position.y < -EPS || position.y >= 1+EPS){
-    selectedTile = &sq;
+    // selectedTile = &sq;
     // std::cout << std::setw(20) << position.x << std::setw(20) << position.y << "\r";
     // std::flush(std::cout);
     return sf::Color::White;
   }
-  position.x = std::clamp(position.x, 0.0, 1.0);
-  position.y = std::clamp(position.y, 0.0, 1.0);
+  position.x = std::clamp(position.x, 0.0, 1.0 - EPS);
+  position.y = std::clamp(position.y, 0.0, 1.0 - EPS);
   // edge
   // if(position.x < 0.01 || position.x > 0.99 || position.y < 0.01 || position.y > 0.99)
   //   return sf::Color::Blue;
 
   // checkerboard pattern
   vec2<int> pixel = position * 8;
-  double brightness = (16 - ((pixel.x ^ pixel.y) & 1) * 5);
+  double brightness = (10 - ((pixel.x ^ pixel.y) & 1) * 5);
   return sf::Color((sq.cell.x + 1)*brightness, (sq.cell.y + 1)*brightness, (sq.cell.z + 1)*brightness);
 
   // gradient
