@@ -22,7 +22,7 @@ currnently empty. This will contain the world generation in the future.
 
 
 ## Future plans
-* Implement procedural terrain generation and game.cpp for world generation
+* Implement procedural terrain generation and game.cpp for world generation. I would like to use spaghetti-cave generation in order to generate a maze of some sort.
 * Optimize the renderer in order to be able to render bigger scenes smoothly.
 * Implement proper movements in order to move along the viewing direction.
 * Add some fog to cover the end of the scene.

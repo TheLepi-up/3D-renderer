@@ -9,7 +9,7 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-  sf::RenderWindow window(sf::VideoMode({ windowWidth, windowHeight }), "3D_maze");
+  sf::RenderWindow window(sf::VideoMode({ windowWidth, windowHeight }), "3D_renderer");
   Renderer renderer(window);
   for (uint k = 0; k < gridSizeZ; k++)
   {
