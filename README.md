@@ -42,3 +42,4 @@ currnently empty. This will contain the world generation in the future.
 * Implement proper movements in order to move along the viewing direction.
 * Add some fog to cover the end of the scene.
 * Optimize raycasting for areas of the screen where rays escape the scene.
+* Implement lighting and shadows.

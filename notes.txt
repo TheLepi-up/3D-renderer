@@ -36,8 +36,28 @@ fac = - N * W / dot
 V = U * fac
 I = A + V
 
+noise:
+  chunk: 16x16x16
+  bounds contain points where spaghetti are joined together:
+    coordinate (vec2) and direction (normalized vec3)
+  inside the chunk: 
+    connect matching points with splines and modify the splines with perlin noise
+  matching points to avoid loops that are disconnected from the rest of the structure:
+    identify every connection with a number and direction, there must be at least one output, so just add one to every side.
+    inputs of numbers less than max-1 are connected to the smallest available output with a number bigger than the input
+    inputs that are unused join into outputs that are already used, fill up from the lowest number.
+    outputs that are unused join to each other starting by joining the highest with the lowest.
+    every connection gives a spline. 
+  distortion:
+    rasterize all splines with a linear decay around each spline line.
+    add perlin noise
+    apply threshhold to get spaghetti.
 
-0.5-10.5, 10.5-20.5
-0-10, 10-20
-1-11, 11-21
-0-11, 10-21
+plan B:
+  https://stackoverflow.com/questions/73214618/how-does-minecraft-generate-thin-noodle-caves
+  |noiseA| + |noiseB| < threshhold
+
+
+perlin noise:
+  interpolation:
+    dx dy + dx cy + cx dy + cx cy

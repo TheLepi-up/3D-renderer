@@ -1,4 +1,5 @@
 build/
 .vscode/
 .gdb_history
-
+/*test.*
+__pycache__
