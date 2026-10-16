@@ -88,6 +88,7 @@ std::vector<square> tiles;
 void Renderer::update(){
   shmap::reset();
   tiles.clear();
+  uint tracecount = 0;
   for (uint j = 0; j < windowHeight; j++) {
     for (uint i = 0; i < windowWidth; i++) {
       uint next = shmap::nextX(i, j);
@@ -95,6 +96,7 @@ void Renderer::update(){
         i = next - 1;
         continue;
       }
+      tracecount++;
       vec3<double> ray = dir + planeX * scaleFromWindowX(i) + planeY * scaleFromWindowY(j) + (vec3<double>){1e-10, 1e-10, 1e-10};
       vec3<double> step = ray.apply<double>([](double a){ return abs(1/a); });
       vec3<int8_t> orientation = ray.apply<int8_t>([](double a){ return (int8_t)(a >= 0 ? 1 : -1); });
@@ -115,11 +117,9 @@ void Renderer::update(){
           cell.z += orientation.z;
           side = 4;
         }
-        if(cell.apply<bool, int>([](int a, int b){ return a < 0 || a >= b; }, 
-                                  {gridSizeX, gridSizeY, gridSizeZ}).any()){
-          break; // out of bounds!
-        }
-        if(getCell(cell)){
+        bool oob = cell.apply<bool, int>([](int a, int b){ return a < 0 || a >= b; }, 
+                                         {gridSizeX, gridSizeY, gridSizeZ}).any();
+        if(oob || getCell(cell)){
             if((side == 0 && orientation.x < 0) || 
              (side == 2 && orientation.y < 0) || 
              (side == 4 && orientation.z < 0))
@@ -189,7 +189,7 @@ void Renderer::update(){
           vec2<double> projectedPoint01 = {screenPoint01 * planeX, screenPoint01 * planeY};
           vec2<double> projectedPoint10 = {screenPoint10 * planeX, screenPoint10 * planeY};
           vec2<double> projectedPoint11 = {screenPoint11 * planeX, screenPoint11 * planeY};
-
+          
           square tile = {
             .distance = (dist00 + dist01 + dist10 + dist11) / 4,
             .point00 = point00,
@@ -205,7 +205,7 @@ void Renderer::update(){
             .boundingBoxMinY = std::max(std::min({projectedPoint00.y, projectedPoint01.y, projectedPoint10.y, projectedPoint11.y}), scaleFromWindowY(0)),
             .boundingBoxMaxY = std::min(std::max({projectedPoint00.y, projectedPoint01.y, projectedPoint10.y, projectedPoint11.y}), scaleFromWindowY(windowHeight)),
             .cell = cell,
-            .cellType = getCell(cell),
+            .cellType = oob ? (uint8_t)0xff : getCell(cell),
             .side = side,
             // .raycastingPos = {i, j}
           };
@@ -218,7 +218,8 @@ void Renderer::update(){
             break;
           }
 #endif
-          tiles.push_back(tile);
+          if(!oob)
+            tiles.push_back(tile);
           shmap::insert(tile);
           break;
         }
@@ -299,7 +300,7 @@ void Renderer::update(){
     window.display();
   }
   logTrace("screen rendered");
-  // std::cout << std::setw(8) << tiles.size() << "\r";
+  // std::cout << "Traces: " << std::setw(8) << tracecount << "Tiles: " << std::setw(8) << tiles.size() << "\r";
   // std::flush(std::cout);
 }
 
