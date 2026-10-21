@@ -58,6 +58,13 @@ plan B:
   |noiseA| + |noiseB| < threshhold
 
 
-perlin noise:
-  interpolation:
-    dx dy + dx cy + cx dy + cx cy
+rotation matrix:
+  axis: N (normalized)
+  angle: phi
+  vector: V
+  rotation matrix:
+  [Nx²(1-cos(phi)) + cos(phi), NxNy(1-cos(phi)) - Nz*sin(phi), NxNz(1-cos(phi)) + Ny*sin(phi)]
+  [NxNy(1-cos(phi)) + Nz*sin(phi), Ny²(1-cos(phi)) + cos(phi), NyNz(1-cos(phi)) - Nx*sin(phi)]
+  [NxNz(1-cos(phi)) - Ny*sin(phi), NyNz(1-cos(phi)) + Ny*sin(phi), Nz²(1-cos(phi)) + cos(phi)]
+
+

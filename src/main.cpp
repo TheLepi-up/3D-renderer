@@ -26,6 +26,7 @@ int main(int argc, char** argv) {
   }
 
   auto lastUpdate = chrono::system_clock::now();
+  bool mouseActive = false;
   //renderer.update();
   while (window.isOpen()) {
     while (const optional<sf::Event> event = window.pollEvent()) {
@@ -52,6 +53,12 @@ int main(int argc, char** argv) {
         case sf::Keyboard::Scancode::S:
           renderer.move({ 0.0, 0.0, -0.1 });
           break;
+        case sf::Keyboard::Scancode::Escape:
+          mouseActive = false;
+          window.setMouseCursorGrabbed(false);
+          window.setMouseCursorVisible(true);
+          break;
+
         // case sf::Keyboard::Scancode::J:
         //   renderer.selectedSquare ++;
         //   break;
@@ -63,14 +70,21 @@ int main(int argc, char** argv) {
           break;
         }
       }
-      if (const sf::Event::MouseMoved* mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
-        sf::Vector2f pos = static_cast<sf::Vector2f>(mouseMoved->position - sf::Vector2i(windowWidth, windowHeight) / 2);
-        sf::Vector2f angle = pos.componentWiseDiv({windowWidth / 2 / M_PI, windowHeight / 2 / M_PI});
-        renderer.setPlaneX({-sin(angle.x), cos(angle.x), 0});
-        renderer.setPlaneY({-cos(angle.x) * sin(angle.y), -sin(angle.x) * sin(angle.y), cos(angle.y)});
-        renderer.setDir({cos(angle.x) * cos(angle.y), sin(angle.x) * cos(angle.y), sin(angle.y)});
+      if(mouseActive){
+        if (const sf::Event::MouseMoved* mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
+          sf::Vector2i delta =  mouseMoved->position - sf::Vector2i(windowWidth, windowHeight) / 2;
+          renderer.rotate(vec2<double>{(double)delta.x, (double)delta.y} / (windowWidth / 2));
+        }
+      }
+      const sf::Event::MouseButtonPressed *mbEvent = nullptr;
+      if((mbEvent = event->getIf<sf::Event::MouseButtonPressed>()) && mbEvent->button == sf::Mouse::Button::Left){
+        mouseActive = true;
+        window.setMouseCursorGrabbed(true);
+        window.setMouseCursorVisible(false);
       }
     }
+    if(mouseActive)
+      sf::Mouse::setPosition({windowWidth / 2, windowHeight / 2}, window);
     auto start = chrono::system_clock::now();
     renderer.update();
     auto timediff = chrono::system_clock::now() - start;

@@ -9,6 +9,7 @@ find_package(SFML 3 REQUIRED COMPONENTS System Window Graphics)
 
 file(GLOB SOURCES "src/*.cpp")
 
+add_compile_options(-std=c++20)
 add_compile_options(-Wall -Ofast -g -flto -ffast-math -ftree-vectorize -march=native)
 # add_compile_options(-Wall -Og -g)
 # add_compile_options(-fsanitize=address)

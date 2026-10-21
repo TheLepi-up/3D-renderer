@@ -4,6 +4,8 @@
 #include <inttypes.h>
 #include "config.h"
 #include "game.h"
+#include "vector.h"
+#include "logging.h"
 
 struct line2D{
   vec2<double> A;
@@ -33,7 +35,6 @@ private:
   sf::RenderWindow &window;
 
   vec3<double> position = {8, 8, 8};
-  //vec4<double> orientation = {1, 0, 0, 0};
   vec3<double> dir = {1, 0, 0};
   vec3<double> planeX = {0, 1, 0};
   vec3<double> planeY = {0, 0, 1};
@@ -54,5 +55,23 @@ public:
   inline vec3<double> getPlaneX(){ return this->planeX; }
   inline vec3<double> getPlaneY(){ return this->planeY; }
   inline void move(vec3<double> step){ position += step; }
+  inline void rotate(vec2<double> direction){
+    if(!direction.any()){ // rotation by angle 0
+      return;
+    }
+
+    double mag = direction.magnitude();
+    vec3<double> rotationDir = (planeX * direction.x + planeY * direction.y) / mag;
+    double angle = mag * M_PI;
+    vec3<double> axis = dir.cross(rotationDir);
+    mat3<double> rot = rotationMatrix(axis, angle);
+    dir = rot * dir;
+    planeX = rot * planeX;
+    //orthogonalize and normalize
+    dir /= dir.magnitude();
+    planeX -= dir * (dir * planeX);
+    planeX /= planeX.magnitude();
+    planeY = dir.cross(planeX);
+  }
 };
 #endif

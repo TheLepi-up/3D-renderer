@@ -98,10 +98,10 @@ void Renderer::update(){
       }
       tracecount++;
       vec3<double> ray = dir + planeX * scaleFromWindowX(i) + planeY * scaleFromWindowY(j) + (vec3<double>){1e-10, 1e-10, 1e-10};
-      vec3<double> step = ray.apply<double>([](double a){ return abs(1/a); });
-      vec3<int8_t> orientation = ray.apply<int8_t>([](double a){ return (int8_t)(a >= 0 ? 1 : -1); });
+      vec3<double> step = ray.apply([](double a){ return abs(1/a); });
+      vec3<int8_t> orientation = ray.apply([](double a){ return (int8_t)(a >= 0 ? 1 : -1); });
       vec3<int> cell = position.apply(static_cast<double (*)(double)>(floor));
-      vec3<double> current = ray.apply<double, double>([](double r, double p){ return r >= 0 ? (1 - p) / r : -p / r; }, position - cell);
+      vec3<double> current = ray.apply([](double r, double p){ return r >= 0 ? (1 - p) / r : -p / r; }, position - cell);
       uint8_t side;
       while(true){
         if(current.x < current.y && current.x < current.z){
@@ -117,8 +117,8 @@ void Renderer::update(){
           cell.z += orientation.z;
           side = 4;
         }
-        bool oob = cell.apply<bool, int>([](int a, int b){ return a < 0 || a >= b; }, 
-                                         {gridSizeX, gridSizeY, gridSizeZ}).any();
+        bool oob = cell.apply([](int a, int b){ return a < 0 || a >= b; }, 
+                              vec3<int>{gridSizeX, gridSizeY, gridSizeZ}).any();
         if(oob || getCell(cell)){
             if((side == 0 && orientation.x < 0) || 
              (side == 2 && orientation.y < 0) || 

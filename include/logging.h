@@ -2,7 +2,7 @@
 #include <sys/types.h>
 extern const std::string LogLevels[5];
 
-void log(const std::string &logLevel, const std::string &file, uint line, const std::string &msg, const std::string& component = "");
+void log(const std::string &logLevel, const std::string &file, uint line, const std::string &msg, const std::string& component);
 
 #define FATAL 4
 #define ERROR 3
